@@ -1,5 +1,31 @@
+// import React, { useEffect, useState } from "react";
+// import { useSwiper, useSwiperSlide } from "swiper/react";
+// import styles from "./CarouselLeftNavigation.module.css";
+// import { ReactComponent as LeftArrow } from "../../../assets/LeftArrow.svg";
+
+// export default function CarouselLeftNavigation() {
+//   const swiper = useSwiper();
+//   const [isBeginning, setIsBeginning] = useState(swiper.isBeginning);
+
+//   useEffect(() => {
+//     swiper.on("slideChange", function () {
+//       setIsBeginning(swiper.isBeginning);
+//     });
+//   }, []);
+
+//   swiper.on("slideChange", function () {
+//     setIsBeginning(swiper.isBeginning);
+//   });
+
+//   return (
+//     <div className={styles.leftNavigation}>
+//       {!isBeginning && <LeftArrow onClick={() => swiper.slidePrev()} />}
+//     </div>
+//   );
+// }
+
 import React, { useEffect, useState } from "react";
-import { useSwiper, useSwiperSlide } from "swiper/react";
+import { useSwiper } from "swiper/react";
 import styles from "./CarouselLeftNavigation.module.css";
 import { ReactComponent as LeftArrow } from "../../../assets/LeftArrow.svg";
 
@@ -8,18 +34,23 @@ export default function CarouselLeftNavigation() {
   const [isBeginning, setIsBeginning] = useState(swiper.isBeginning);
 
   useEffect(() => {
-    swiper.on("slideChange", function () {
-      setIsBeginning(swiper.isBeginning);
-    });
-  }, []);
+    const handleSlideChange = () => setIsBeginning(swiper.isBeginning);
+    swiper.on("slideChange", handleSlideChange);
 
-  swiper.on("slideChange", function () {
-    setIsBeginning(swiper.isBeginning);
-  });
+    return () => swiper.off("slideChange", handleSlideChange); // cleanup
+  }, [swiper]);
 
   return (
     <div className={styles.leftNavigation}>
-      {!isBeginning && <LeftArrow onClick={() => swiper.slidePrev()} />}
+      <LeftArrow
+        onClick={() => swiper.slidePrev()}
+        style={{
+          opacity: isBeginning ? 0.5 : 1,
+          pointerEvents: isBeginning ? "none" : "auto",
+          cursor: isBeginning ? "default" : "pointer",
+        }}
+      />
     </div>
   );
 }
+
